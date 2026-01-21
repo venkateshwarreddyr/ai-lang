@@ -54,8 +54,8 @@ Workflow
     }
 
 Transition
-  = from:Identifier _ "->" _ action:Identifier _ {
-      return { from, action };
+  = from:Identifier _ "->" _ action:Identifier _ "->" _ to:Identifier _ {
+      return { from, action, to };
     }
 
 Expression

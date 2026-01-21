@@ -22,7 +22,7 @@ export function astToIR(ast: any[]): { states: State[], actions: Action[], workf
     } else if (item.type === "workflow") {
       workflows.push({
         name: item.name,
-        transitions: item.transitions.map((t: any) => ({ from: t.from, to: "", action: t.action })) // to is not specified, maybe set to next
+        transitions: item.transitions.map((t: any) => ({ from: t.from, to: t.to, action: t.action }))
       });
     }
   }
