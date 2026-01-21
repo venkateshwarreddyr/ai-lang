@@ -14,5 +14,4 @@ action CompleteTodo {
   effects Todo.status = DONE
 }
 
-invariant Todo.status == DONE
-  implies true
+invariant Todo.status == DONE implies true
