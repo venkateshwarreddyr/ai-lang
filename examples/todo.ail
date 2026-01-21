@@ -1,22 +1,18 @@
-state Todo {
-    id: string
-    title: string
-    status: PENDING | IN_PROGRESS | DONE
+entity Todo {
+  id: string
+  title: string
+  status: PENDING | IN_PROGRESS | DONE
 }
 
-action StartTodo(todo_id: string) {
-    requires Todo.status == PENDING
-    effect Todo.status = IN_PROGRESS
-    emit EventTodoStarted(todo_id)
+action StartTodo {
+  requires Todo.status == PENDING
+  effects Todo.status = IN_PROGRESS
 }
 
-action CompleteTodo(todo_id: string) {
-    requires Todo.status == IN_PROGRESS
-    effect Todo.status = DONE
-    emit EventTodoCompleted(todo_id)
+action CompleteTodo {
+  requires Todo.status == IN_PROGRESS
+  effects Todo.status = DONE
 }
 
-workflow TodoLifecycle {
-    start -> StartTodo
-    StartTodo -> CompleteTodo
-}
+invariant Todo.status == DONE
+  implies true

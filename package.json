@@ -9,9 +9,11 @@
     "dev": "ts-node src/index.ts"
   },
   "dependencies": {
+    "glob": "^13.0.0",
     "pegjs": "^0.10.0"
   },
   "devDependencies": {
+    "@types/glob": "^8.1.0",
     "@types/node": "^18.0.0",
     "@types/pegjs": "^0.10.6",
     "ts-node": "^10.9.0",

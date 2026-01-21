@@ -1,4 +1,4 @@
-import { Action } from "../ir/ir";
+import { Action, Invariant } from "../ir/ir";
 
 function evalCondition(cond: string, state: any): boolean {
   const parts = cond.split('==').map(s => s.trim());
@@ -26,7 +26,28 @@ function applyEffect(effect: string, state: any): void {
   }
 }
 
-export function executeAction(actionName: string, input: any, state: any, actions: Action[]) {
+function assertInvariants(state: any, invariants: Invariant[]): void {
+  for (const invariant of invariants) {
+    // Simple check for "A implies B"
+    const impliesIndex = invariant.indexOf('implies');
+    if (impliesIndex !== -1) {
+      const antecedent = invariant.substring(0, impliesIndex).trim();
+      const consequent = invariant.substring(impliesIndex + 7).trim();
+      if (evalCondition(antecedent, state)) {
+        if (!evalCondition(consequent, state)) {
+          throw new Error(`Invariant violated: ${invariant}`);
+        }
+      }
+    } else {
+      // If no implies, assume it's a direct condition that must be true
+      if (!evalCondition(invariant, state)) {
+        throw new Error(`Invariant violated: ${invariant}`);
+      }
+    }
+  }
+}
+
+export function executeAction(actionName: string, state: any, actions: Action[], invariants: Invariant[]) {
   const action = actions.find(a => a.name === actionName);
   if (!action) throw new Error("Action not found");
 
@@ -37,6 +58,6 @@ export function executeAction(actionName: string, input: any, state: any, action
   // execute effects
   action.effects.forEach(effect => applyEffect(effect, state));
 
-  // emit events
-  action.emits.forEach(event => console.log(`Event emitted: ${event}`));
+  // check invariants
+  assertInvariants(state, invariants);
 }

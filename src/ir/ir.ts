@@ -1,16 +1,17 @@
-export type StateField = { name: string; type: string; optional?: boolean };
+export type EntityField = { name: string; type: string; optional?: boolean };
 
-export type State = { name: string; fields: StateField[] };
+export type Entity = { name: string; fields: EntityField[] };
 
 export type Action = {
   name: string;
-  inputs: Record<string, string>;
   requires: string[]; // preconditions
   effects: string[];  // state updates
-  emits: string[];    // events
 };
 
-export type Workflow = {
-  name: string;
-  transitions: { from: string; to: string; action: string }[];
-};
+export type Invariant = string;
+
+export interface IR {
+  entities: Record<string, Record<string, any>>; // initial state
+  actions: Action[];
+  invariants: Invariant[];
+}

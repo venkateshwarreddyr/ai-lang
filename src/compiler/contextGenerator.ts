@@ -31,8 +31,7 @@ export function generateAIContext(
     state: currentState,
     allowed_actions: allowedActions.map(a => ({
       name: a.name,
-      constraints: a.requires,
-      inputs: a.inputs
+      constraints: a.requires
     })),
     recent_events: [], // could be populated from event log
     goal: null         // optional, could come from workflow or user input

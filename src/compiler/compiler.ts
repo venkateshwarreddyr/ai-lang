@@ -1,31 +1,37 @@
-import { State, Action, Workflow } from "../ir/ir";
+import { Entity, Action, Invariant, IR } from "../ir/ir";
 
-export function astToIR(ast: any[]): { states: State[], actions: Action[], workflows: Workflow[] } {
-  const states: State[] = [];
+function getInitialValue(type: string): any {
+  // Assume the first value in union is initial
+  const parts = type.split('|').map(s => s.trim());
+  if (parts.length > 1) {
+    return parts[0];
+  }
+  // For simple types, maybe default
+  return null; // or some default
+}
+
+export function astToIR(ast: any[]): IR {
+  const entities: Record<string, Record<string, any>> = {};
   const actions: Action[] = [];
-  const workflows: Workflow[] = [];
+  const invariants: Invariant[] = [];
 
   for (const item of ast) {
-    if (item.type === "state") {
-      states.push({
-        name: item.name,
-        fields: item.fields.map((f: any) => ({ name: f.name, type: f.type }))
-      });
+    if (item.type === "entity") {
+      const entityState: Record<string, any> = {};
+      for (const field of item.fields) {
+        entityState[field.name] = getInitialValue(field.type);
+      }
+      entities[item.name] = entityState;
     } else if (item.type === "action") {
       actions.push({
         name: item.name,
-        inputs: item.params.reduce((acc: any, p: any) => ({ ...acc, [p.name]: p.type }), {}),
         requires: item.requires,
-        effects: item.effects,
-        emits: item.emits.map((e: any) => `${e.name}(${e.args.join(', ')})`)
+        effects: item.effects
       });
-    } else if (item.type === "workflow") {
-      workflows.push({
-        name: item.name,
-        transitions: item.transitions.map((t: any) => ({ from: t.from, to: t.to, action: t.action }))
-      });
+    } else if (item.type === "invariant") {
+      invariants.push(item.condition);
     }
   }
 
-  return { states, actions, workflows };
+  return { entities, actions, invariants };
 }
