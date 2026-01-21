@@ -1,0 +1,22 @@
+state Todo {
+    id: string
+    title: string
+    status: PENDING | IN_PROGRESS | DONE
+}
+
+action StartTodo(todo_id: string) {
+    requires Todo.status == PENDING
+    effect Todo.status = IN_PROGRESS
+    emit EventTodoStarted(todo_id)
+}
+
+action CompleteTodo(todo_id: string) {
+    requires Todo.status == IN_PROGRESS
+    effect Todo.status = DONE
+    emit EventTodoCompleted(todo_id)
+}
+
+workflow TodoLifecycle {
+    start -> StartTodo
+    StartTodo -> CompleteTodo
+}
