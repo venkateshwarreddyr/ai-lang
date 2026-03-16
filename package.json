@@ -1,5 +1,5 @@
 {
-  "name": "ailang",
+  "name": "ai-lang",
   "version": "1.0.0",
   "description": "AILang compiler",
   "main": "dist/index.js",
