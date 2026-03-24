@@ -6,21 +6,29 @@ Write declarative workflow specs in AILang → compiler produces structured AI-c
 
 ## Architecture
 
-```
-.ail source
-    ↓
-Parser (PEG.js grammar)
-    ↓
-AST
-    ↓
-Compiler → IR (Intermediate Representation)
-    ↓
-Context Generator → AI-compatible JSON
-    ↓
-Runtime (state manager + event log + executor)
-    ↓
-MCP Adapters (Model Context Protocol stubs)
-```
+### Compiler Pipeline
+
+The core of AILang is a classic compiler pipeline: `.ail` source files are parsed via a PEG.js grammar into an AST, compiled into an Intermediate Representation (IR), and then output as either AI-compatible JSON context or HTML state machine visualizations.
+
+![Compiler Pipeline Architecture](docs/diagrams/architecture-pipeline.png)
+
+### Module & Component Structure
+
+AILang is organized into six main modules — Parser, Compiler, IR, Runtime, MCP Adapters, and Visualizer — all orchestrated through the CLI entry point.
+
+![Module & Component Structure](docs/diagrams/module-structure.png)
+
+### Data Flow
+
+Data flows left-to-right through the compiler pipeline, then enters a runtime feedback loop where the AI agent reads context, selects actions, and the executor updates state for the next cycle.
+
+![Data Flow](docs/diagrams/data-flow.png)
+
+### Runtime Execution Model
+
+When an AI agent selects an action, the executor validates preconditions, applies state mutations, asserts invariants, and feeds the updated context back to the agent.
+
+![Runtime Execution Model](docs/diagrams/runtime-execution.png)
 
 ## AILang Syntax
 
